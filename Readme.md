@@ -5,7 +5,7 @@ Socially is a social media platform that allows users to create posts, interact 
 ## Tech Stack
 
 - **Backend**: NestJS, PostgreSQL
-- **Frontend**: Next.js, Shadcn Formik
+- **Frontend**: Next.js, Shadcn, SWR, Cloudinary
 
 ## Features
 
@@ -35,6 +35,13 @@ Socially is a social media platform that allows users to create posts, interact 
 2. Install dependencies using `npm install` or `yarn install`
 3. Build the Next.js application using `npm run build` or `yarn build`
 4. Start the development server using `npm run dev` or `yarn dev`
+
+### Entities
+1. User
+2. Post
+3. Like
+4. Comments
+5. Connection
 
 ## API Endpoints
 

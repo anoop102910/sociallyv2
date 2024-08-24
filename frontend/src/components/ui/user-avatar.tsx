@@ -4,7 +4,7 @@ import * as React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 
 interface UserAvatarProps {
-  name: string;
+  name: string | null;
   src?: string;
   isProfile?: boolean; 
 }

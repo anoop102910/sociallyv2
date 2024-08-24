@@ -34,7 +34,12 @@ export class PostController {
   }
 
   @Get('my-posts')
-  async getUserrPosts(@GetUser('id') userId: number) {
+  async getMyPosts(@GetUser('id') userId: number) {
+    return this.postService.getUserPosts(userId);
+  }
+
+  @Get('users/:userId/posts')
+  async getUserPosts(@Param('userId', ParseIntPipe) userId: number) {
     return this.postService.getUserPosts(userId);
   }
 

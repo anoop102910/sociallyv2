@@ -49,7 +49,7 @@ function RegisterForm() {
   const onSubmit: SubmitHandler<LoginValues> = async values => {
     try {
       setIsPending(true);
-      const response = await api.post("/user/signin", values);
+      const response = await api.post("/auth/register", values);
 
       if (response.status === 401) {
         throw new Error("Invalid email or password");
@@ -79,29 +79,24 @@ function RegisterForm() {
         <h2 className="text-2xl font-semibold text-center mb-16">Signin to your account</h2>
 
         <div className="space-y-4">
-          <div className="flex gap-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Last Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="name"
-                      placeholder="Eg. singh"
-                      {...field}
-                      className="input-auth"
-                    />
-                  </FormControl>
-                  <FormMessage>
-                  {errors.name && errors.name.message}
-                    {/* {errors.name && errors.name.message} */}
-                  </FormMessage>
-                </FormItem>
-              )}
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input
+                    type="name"
+                    placeholder="Eg. Anoop Singh"
+                    {...field}
+                    className="input-auth"
+                  />
+                </FormControl>
+                <FormMessage>{errors.name && errors.name.message}</FormMessage>
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="email"
@@ -116,9 +111,7 @@ function RegisterForm() {
                     className="input-auth"
                   />
                 </FormControl>
-                <FormMessage>
-                  {errors.email && errors.email.message}
-                </FormMessage>
+                <FormMessage>{errors.email && errors.email.message}</FormMessage>
               </FormItem>
             )}
           />
@@ -137,14 +130,12 @@ function RegisterForm() {
                     className="input-auth"
                   />
                 </FormControl>
-                <FormMessage>
-                  {errors.password && errors.password.message}
-                </FormMessage>
+                <FormMessage>{errors.password && errors.password.message}</FormMessage>
               </FormItem>
             )}
           />
         </div>
-        <Button variant={"auth"}  type="submit" className="button-auth mt-10 w-full">
+        <Button variant={"auth"} type="submit" className="button-auth mt-10 w-full">
           {isPending ? "Signing in..." : "Sign in"}
         </Button>
 

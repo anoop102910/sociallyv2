@@ -7,16 +7,15 @@ import api from "@/lib/api";
 
 interface ImageUploaderProps {
   className?: string;
-  onClose: () => void;
 }
 
-export default function ImageUploader({ className, onClose }: ImageUploaderProps) {
+export default function ImageUploader({ className }: ImageUploaderProps) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const imageRef = useRef<HTMLInputElement | null>(null);
-  const {user} = useAuthContext();
+  const { user } = useAuthContext();
   const username = user.name;
-  const router = useRouter()
+  const router = useRouter();
 
   const clearForm = () => {
     if (imageRef.current) {
@@ -33,13 +32,9 @@ export default function ImageUploader({ className, onClose }: ImageUploaderProps
         console.log(selectedImage);
         const formData = new FormData();
         formData.append("image", selectedImage);
-        const response = await api.post(
-          "api/user/profile",
-          formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
-        );
+        const response = await api.post("api/user/profile", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         console.log(response.data);
         clearForm();
         setLoading(false);
@@ -54,9 +49,7 @@ export default function ImageUploader({ className, onClose }: ImageUploaderProps
   };
 
   return (
-    <div
-      className={`animate-scale bg-white p-4 rounded-md shadow-md absolute top-[calc(100%-500px)] left-[calc(50%-300px)] w-[600px] z-10 h-auto ${className}`}
-    >
+    <div>
       <div className="flex justify-between">
         <div className="flex justify-between w-full">
           <div className="flex items-center">
@@ -65,10 +58,7 @@ export default function ImageUploader({ className, onClose }: ImageUploaderProps
               <span className="text-sm text-gray-600">{username}</span>
             </div>
           </div>
-          <i
-            onClick={onClose}
-            className="fas fa-times block text-3xl cursor-pointer font-bold text-red-500"
-          ></i>
+          <i className="fas fa-times block text-3xl cursor-pointer font-bold text-red-500"></i>
         </div>
       </div>
       <div>
@@ -111,7 +101,9 @@ export default function ImageUploader({ className, onClose }: ImageUploaderProps
               </label>
               <input
                 ref={imageRef}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setSelectedImage(e.target.files ? e.target.files[0] : null)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setSelectedImage(e.target.files ? e.target.files[0] : null)
+                }
                 id="image"
                 name="image"
                 type="file"

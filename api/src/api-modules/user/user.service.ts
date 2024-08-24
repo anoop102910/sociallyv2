@@ -4,6 +4,7 @@ import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import * as sc from '../../schema';
 import { DrizzleAsyncProvider } from 'src/core-modules/drizzle/drizzle.provider';
 import * as q from 'drizzle-orm';
+import { FindAllQuery } from './dto/query.dto';
 @Injectable()
 export class UserService {
   constructor(
@@ -11,8 +12,11 @@ export class UserService {
     private db: NodePgDatabase<typeof sc>,
   ) {}
 
-  async findAll(userId: number) {
+  async findAll(userId: number, query: FindAllQuery) {
     const users = await this.selectUser(userId);
+    // .where(z
+    //   q.like(sc.users.name, `%${query.query}%`),
+    // );
     return users.filter((user) => user.id != userId);
   }
 

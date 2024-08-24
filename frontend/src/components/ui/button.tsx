@@ -47,6 +47,7 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, isPending = false, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
+    console.count();
     return (
       <Comp
         disabled={isPending}

@@ -18,7 +18,10 @@ export class PostService {
       .insert(sc.posts)
       .values({ authorId: userId, ...createPostDto })
       .returning();
-    return post;
+    const [newpost] = await this.selectPostsWithAuthor(userId).where(
+      q.eq(sc.posts.id, post.id),
+    );
+    return newpost;
   }
 
   async getUserFeed(userId: number) {
@@ -75,7 +78,7 @@ export class PostService {
         mediaUrl: sc.posts.mediaUrl,
         createdAt: sc.posts.createdAt,
         updatedAt: sc.posts.updatedAt,
-        likes: q.count(sc.likes.userId).as('likes'),
+        likes: q.countDistinct(sc.likes.userId).as('likes'),
         comments: q.count(sc.comments.id).as('comments'),
         isLiked: q.sql<number>`
           EXISTS (
@@ -87,7 +90,7 @@ export class PostService {
       .from(sc.posts)
       .leftJoin(sc.users, q.eq(sc.users.id, sc.posts.authorId))
       .leftJoin(sc.likes, q.eq(sc.likes.postId, sc.posts.id))
-      .leftJoin(sc.comments, q.eq(sc.comments.authorId, sc.posts.authorId))
+      .leftJoin(sc.comments, q.eq(sc.posts.id, sc.comments.postId))
       .groupBy(sc.posts.id, sc.users.id);
   }
 }

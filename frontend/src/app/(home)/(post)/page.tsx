@@ -11,7 +11,6 @@ import { useEffect } from "react";
 function Post() {
   const { posts, isLoading, error } = postService.useGetUserFeed();
 
-  console.log(posts, isLoading, error);
   const postCount = posts?.length ?? 0;
 
   if (isLoading) return <Loader />;

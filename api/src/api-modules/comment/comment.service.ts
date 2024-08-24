@@ -27,8 +27,18 @@ export class CommentService {
 
   async findByPostId(postId: number) {
     return await this.db
-      .select()
+      .select({
+        id: sc.comments.id,
+        author: {
+          id: sc.users.id,
+          name: sc.users.name,
+        },
+        content: sc.comments.content,
+        createdAt: sc.comments.createdAt,
+        updatedAt: sc.comments.updatedAt,
+      })
       .from(sc.comments)
+      .leftJoin(sc.users, q.eq(sc.users.id, sc.comments.authorId))
       .where(q.eq(sc.comments.postId, postId));
   }
 

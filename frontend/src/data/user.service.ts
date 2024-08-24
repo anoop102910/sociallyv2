@@ -2,20 +2,24 @@ import useSWR from "swr";
 import api from "../lib/api";
 import { User } from "@/types";
 import fetcher from "@/lib/fether";
+import useSWRMutation from "swr/mutation";
 
 export const userService = {
   // Get all users
   useAllUsers: ({ query = "" }: { query?: string } = {}) => {
-    const { data, isLoading, error, mutate } = useSWR<User[]>("/users", fetcher);
-    console.log(error,data);
-    return { users: data, isLoading, error, mutate };
+    const data = useSWR<User[]>("/users", fetcher);
+    return { ...data, users: data.data };
+  },
+
+  useSearchUsers: (query:string = "" ) => {
+    const data = useSWR<User[]>(query.length > 2 ? `/users?query=${encodeURIComponent(query)}` : null, fetcher);
+    return { ...data, users: data.data };
   },
 
   // Get a single user by ID
   useUser: (id: number) => {
-    const { data, error, mutate } = useSWR<User>(id ? `/users/${id}` : null, fetcher);
-    console.log(data);
-    return { user: data, error, mutate };
+    const { data, ...rest } = useSWR<User>(id ? `/users/${id}` : null, fetcher);
+    return { user: data, ...rest };
   },
 
   // Get profile data
@@ -50,7 +54,8 @@ export const userService = {
   },
 
   // Delete a user
-  deleteUser: async (id: number) => { // or string, based on your API
+  deleteUser: async (id: number) => {
+    // or string, based on your API
     try {
       await api.delete(`/api/users/${id}`);
     } catch (error) {

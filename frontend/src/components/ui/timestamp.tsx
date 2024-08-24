@@ -4,7 +4,7 @@ import { formatDistanceToNow, parseISO } from "date-fns";
 
 interface TimestampProps {
   date: string;
-  className: string;
+  className?: string;
 }
 
 const Timestamp: React.FC<TimestampProps> = ({ date, className }) => {

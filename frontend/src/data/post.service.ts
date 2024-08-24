@@ -7,20 +7,18 @@ import api from "@/lib/api";
 
 export const postService = {
   useGetMyPosts: () => {
-    const { data, isLoading, error, mutate } = useSWR<Post[]>("/my-posts", fetcher);
-    console.log(data);
-    return { posts: data, isLoading, error, mutate };
+    const { data, ...rest } = useSWR<Post[]>("/my-posts", fetcher);
+    return { ...rest, posts: data };
   },
 
   useGetUserFeed: () => {
-    const { data, isLoading, error, mutate } = useSWR<Post[]>("/my-feed", fetcher);
-    // console.log(data);
-    return { posts: data, isLoading, error, mutate };
+    const { data, ...rest } = useSWR<Post[]>("/my-feed", fetcher);
+    return { ...rest, posts: data };
   },
 
-  useGetComments: (postId: number) => {
-    const { data, error, mutate } = useSWR(postId ? `/posts/${postId}/comments` : null, fetcher);
-    return { data, error, mutate };
+  useUserPosts : (userId: number) => {
+    const { data, ...rest } = useSWR<Post[]>(`/users/${userId}/posts`, fetcher);
+    return { ...rest, posts: data };
   },
 
   createPost: async (postData: CreatePost) => {

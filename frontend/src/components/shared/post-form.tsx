@@ -4,6 +4,7 @@ import { postService } from "@/data/post.service";
 import { useAuthContext } from "@/context/authContext";
 import { Textarea } from "../ui/textarea";
 import { toast } from "react-toastify";
+import { useSWRConfig } from "swr";
 
 interface PostFormProps {
   className?: string;
@@ -15,6 +16,7 @@ const PostForm: React.FC<PostFormProps> = ({ className }) => {
   const imageRef = useRef<HTMLInputElement | null>(null);
   const [isPending, setIsPending] = useState<boolean>(false);
   const { user } = useAuthContext();
+  const { posts, mutate } = postService.useGetUserFeed();
 
   const clearForm = () => {
     setText("");
@@ -31,8 +33,8 @@ const PostForm: React.FC<PostFormProps> = ({ className }) => {
     setIsPending(true);
 
     try {
-      await postService.createPost({ content: text, mediaFile: selectedImage });
-      postService.useGetUserFeed().mutate()
+      const post = await postService.createPost({ content: text, mediaFile: selectedImage });
+      if (posts) mutate([post, ...posts], { revalidate: false });
       clearForm();
     } catch (error) {
       toast.error("Failed to create post");
@@ -52,7 +54,7 @@ const PostForm: React.FC<PostFormProps> = ({ className }) => {
     <div className={`bg-white text-gray-700 p-4 md:rounded-md shadow-md ${className}`}>
       <div className="flex justify-between">
         <div className="flex items-center">
-          <UserAvatar name="Profile" isProfile={true} />
+          <UserAvatar name={user.name} isProfile={true} />
           <div className="flex flex-col ml-3 gap-y-1">
             <span className="text-sm">{user.name}</span>
           </div>

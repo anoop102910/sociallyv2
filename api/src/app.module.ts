@@ -7,6 +7,7 @@ import { PostModule } from './api-modules/post/post.module';
 import { LikeModule } from './api-modules/like/like.module';
 import { UserModule } from './api-modules/user/user.module';
 import { ConnnectionModule } from './api-modules/connnection/connnection.module';
+import { CommentModule } from './api-modules/comment/comment.module';
 @Module({
   imports: [
     AuthModule,
@@ -16,6 +17,7 @@ import { ConnnectionModule } from './api-modules/connnection/connnection.module'
     LikeModule,
     UserModule,
     ConnnectionModule,
+    CommentModule,
     ConfigModule.forRoot({ isGlobal: true }),
   ],
 })

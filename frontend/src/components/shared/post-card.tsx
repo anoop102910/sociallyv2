@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import CommentForm from "./comment-form";
 
 interface PostCardProps {
   className?: string;
@@ -35,6 +36,7 @@ const PostCard: React.FC<PostCardProps> = ({ className, post }) => {
   const { user } = useAuthContext();
   const isUserPost = post.author.id === user.id;
   const { posts, mutate } = postService.useGetUserFeed();
+  const [toggle, setToggle] = useState(false);
 
   const menuItems = [
     {
@@ -50,31 +52,36 @@ const PostCard: React.FC<PostCardProps> = ({ className, post }) => {
   ];
 
   const handlePostDelete = async () => {
-    console.log("delete/post");
     await postService.deletePost(post.id);
+    mutate(
+      posts?.filter(p => p.id != post.id),
+      { revalidate: false }
+    );
   };
 
   const handlePostLike = async () => {
     await postService.likePost(post.id);
-    // mutate(posts?.map(p => (p.id != post.id ? p : { ...p, isLiked: true })),);
+    mutate(
+      posts?.map(p => (p.id != post.id ? p : { ...p, isLiked: true, likes: p.likes++ })),
+      { revalidate: false }
+    );
     mutate();
   };
 
   const handlePostUnlike = () => {
     postService.likePost(post.id);
     mutate();
-    // mutate(posts?.map(p => (p.id != post.id ? p : { ...p, isLiked: false })));
-  };
-
-  const handleComment = () => {
-    commentService.addComment({ text: commentVal, postId: post.id });
-    setCommentVal("");
+    mutate(
+      posts?.map(p => (p.id != post.id ? p : { ...p, isLiked: false, likes: p.likes - 1 })),
+      { revalidate: false }
+    );
   };
 
   return (
     <div
       className={`bg-white py-4 md:p-4 md:rounded-md text-gray-700 shadow-md test:bg-dark-200 test:text-white ${className}`}
     >
+      {/* Post Header */}
       <div className="flex justify-between px-2">
         <div className="flex items-center">
           <UserAvatar name={post.author.name} src={post.author.imageUrl} />
@@ -103,6 +110,8 @@ const PostCard: React.FC<PostCardProps> = ({ className, post }) => {
           </DropdownMenu>
         )}
       </div>
+
+      {/* Post content */}
       <div className="mt-8 test:text-slate-300 text-gray-700 text-[0.89rem]">
         {post.content && <p className="px-2">{post.content}</p>}
         {post.mediaUrl && (
@@ -113,7 +122,8 @@ const PostCard: React.FC<PostCardProps> = ({ className, post }) => {
             loading="lazy"
           />
         )}
-        
+
+        {/* Post footer */}
         <div className="mt-4 flex justify-between items-center px-2">
           <div className="flex gap-x-6">
             <div className="flex">
@@ -131,7 +141,12 @@ const PostCard: React.FC<PostCardProps> = ({ className, post }) => {
               )}
               <span className="test:text-white ml-1">{post.likes} Likes</span>
             </div>
-            <div className="cursor-pointer hover:underline">
+            <div
+              onClick={() => {
+                if (post.comments != 0) setToggle(prev => !prev);
+              }}
+              className="cursor-pointer hover:underline"
+            >
               <MessageCircle className="inline-block" />
               <span className="test:text-white ml-1">{post.comments} Comments</span>
             </div>
@@ -141,23 +156,12 @@ const PostCard: React.FC<PostCardProps> = ({ className, post }) => {
             <span className="test:text-white ml-2">Share</span>
           </div>
         </div>
-        <div className="flex gap-x-3 mt-4 items-center px-2">
-          <UserAvatar name={post.author.name} src={post.author.imageUrl} />
-          <Input
-            value={commentVal}
-            onChange={e => setCommentVal(e.target.value)}
-            className="input-primary"
-            placeholder="Write some content to post"
-            type="text"
-          />
-          {commentVal.length !== 0 && <Button onClick={handleComment}>Post</Button>}
-        </div>
-        {/* {post.comments && post.comments !== 0 && (
-          <>
-            <CommentBox postId={post.id} />
-            <span className="underline text-sm text-slate-600">Load More...</span>
-          </>
-        )} */}
+
+        {/* Comment form */}
+        <CommentForm post={post} />
+
+        {/* Comment Lists */}
+        {toggle && <CommentBox postId={post.id} />}
       </div>
     </div>
   );
