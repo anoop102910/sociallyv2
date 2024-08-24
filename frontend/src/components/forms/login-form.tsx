@@ -40,6 +40,7 @@ function LoginForm() {
   const {
     handleSubmit,
     setError,
+    setValue,
     formState: { errors },
   } = form;
 
@@ -58,6 +59,13 @@ function LoginForm() {
       setIsPending(false);
     }
   };
+
+  const handleDemoLogin = () => {
+    setValue("email", "demo@example.com");
+    setValue("password", "welcome");
+    handleSubmit(onSubmit)();
+  };
+
   return (
     <Form {...form}>
       <form
@@ -105,8 +113,16 @@ function LoginForm() {
             )}
           />
         </div>
+
         <Button variant={"auth"} type="submit" className="button-auth mt-10 w-full">
           {isPending ? "Signing in..." : "Sign in"}
+        </Button>
+
+        <div className="flex items-center justify-center my-3 space-x-2">
+          <span className="text-sm text-gray-500 dark:text-gray-400">OR</span>
+        </div>
+        <Button variant={"auth"} className="button-auth  w-full" onClick={handleDemoLogin}>
+          Use Demo Credentials
         </Button>
 
         <span className="text-sm block text-center mt-10">
