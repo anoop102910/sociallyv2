@@ -5,12 +5,13 @@ import * as sc from '../../schema';
 import { DrizzleAsyncProvider } from 'src/core-modules/drizzle/drizzle.provider';
 import * as q from 'drizzle-orm';
 import { CreatePostDto } from './dto/create-post.dto';
-
+import { CloudinaryService } from 'src/core-modules/cloud-upload/cloud.service';
 @Injectable()
 export class PostService {
   constructor(
     @Inject(DrizzleAsyncProvider)
     private db: NodePgDatabase<typeof sc>,
+    private cloudinaryService: CloudinaryService,
   ) {}
 
   async create(userId: number, createPostDto: CreatePostDto) {
@@ -24,25 +25,47 @@ export class PostService {
     return newpost;
   }
 
-  async getUserFeed(userId: number) {
-    const userCons = this.db
+  async getUserFeed(userId: number, cursor?: number) {
+    const userCons = await this.db
       .select()
       .from(sc.connections)
-      .where(q.eq(sc.connections.userId, userId))
-      .as('userCons');
+      .where(q.eq(sc.connections.userId, userId));
 
-    return await this.selectPostsWithAuthor(userId).where(
-      q.or(
-        q.eq(sc.posts.authorId, userId),
-        q.eq(sc.posts.authorId, userCons.id),
-      ),
-    );
+    const userConsIds = userCons.map((c) => c.connectionId);
+    userConsIds.push(userId);
+
+    return await this.selectPostsWithAuthor(userId)
+      .where(
+        q.or(
+          q.eq(sc.posts.authorId, userId),
+          q.inArray(sc.posts.authorId, userConsIds),
+          q.gt(sc.posts.id, cursor ?? 0),
+        ),
+      )
+      .orderBy(q.desc(sc.posts.id))
+      // .limit(10);
   }
 
   async getUserPosts(userId: number) {
     return await this.selectPostsWithAuthor(userId)
       .where(q.eq(sc.posts.authorId, userId))
       .orderBy(q.desc(sc.posts.id));
+  }
+
+  async getSavedPosts(userId: number) {
+    const savedPosts = await this.db
+      .select()
+      .from(sc.savedPosts)
+      .where(q.eq(sc.savedPosts.userId, userId))
+      .orderBy(q.desc(sc.savedPosts.createdAt));
+
+    const posts = await this.selectPostsWithAuthor(userId).where(
+      q.inArray(
+        sc.posts.id,
+        savedPosts.map((p) => p.postId),
+      ),
+    );
+    return posts;
   }
 
   async update(id: number, updatePostDto: any) {
@@ -66,6 +89,11 @@ export class PostService {
     return post;
   }
 
+  async uploadImage(file: Express.Multer.File) {
+    const result = await this.cloudinaryService.uploadImage(file.buffer);
+    return result.secure_url;
+  }
+
   selectPostsWithAuthor(userId: number) {
     return this.db
       .select({
@@ -85,6 +113,12 @@ export class PostService {
             SELECT * FROM likes
             WHERE likes.user_id = ${userId}
             AND likes.post_id = ${sc.posts.id}
+          )`,
+        isSaved: q.sql<number>`
+          EXISTS (
+            SELECT * FROM saved_posts
+            WHERE saved_posts.user_id = ${userId}
+            AND saved_posts.post_id = ${sc.posts.id}
           )`,
       })
       .from(sc.posts)

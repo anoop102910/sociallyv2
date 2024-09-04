@@ -15,6 +15,8 @@ import {
   MessageCircle,
   Share2,
   HeartCrack,
+  Bookmark,
+  BookmarkCheck,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -49,7 +51,28 @@ const PostCard: React.FC<PostCardProps> = ({ className, post }) => {
       icon: <Edit className="text-slate-600" />,
       // onClick: () => handlePostEdit(),
     },
+    {
+      label: post.isSaved ? "Unsave" : "Save",
+      icon: post.isSaved ? (
+        <BookmarkCheck className="text-slate-600" />
+      ) : (
+        <Bookmark className="text-slate-600" />
+      ),
+      onClick: () => handlePostSave(),
+    },
   ];
+
+  const handlePostSave = async () => {
+    if (post.isSaved) {
+      await postService.unsavePost(post.id);
+    } else {
+      await postService.savePost(post.id);
+    }
+    mutate(
+      posts?.map(p => (p.id != post.id ? p : { ...p, isSaved: !p.isSaved })),
+      { revalidate: false }
+    );
+  };
 
   const handlePostDelete = async () => {
     await postService.deletePost(post.id);

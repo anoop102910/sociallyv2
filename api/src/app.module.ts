@@ -8,6 +8,7 @@ import { LikeModule } from './api-modules/like/like.module';
 import { UserModule } from './api-modules/user/user.module';
 import { ConnnectionModule } from './api-modules/connnection/connnection.module';
 import { CommentModule } from './api-modules/comment/comment.module';
+import { ChatModule } from './api-modules/chat/chat.module';
 @Module({
   imports: [
     AuthModule,
@@ -19,6 +20,7 @@ import { CommentModule } from './api-modules/comment/comment.module';
     ConnnectionModule,
     CommentModule,
     ConfigModule.forRoot({ isGlobal: true }),
+    ChatModule,
   ],
 })
 export class AppModule {}

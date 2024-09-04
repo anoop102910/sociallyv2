@@ -5,10 +5,8 @@ import {
   timestamp,
   text,
   integer,
-  boolean,
   primaryKey,
 } from 'drizzle-orm/pg-core';
-import { InferInsertModel, InferSelectModel } from 'drizzle-orm';
 
 export const role = pgEnum('role', ['user', 'admin']);
 export const conStatus = pgEnum('connection_status', ['pending', 'accepted']);
@@ -95,13 +93,80 @@ export const connections = pgTable('connections', {
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
-export type UserSelect = InferSelectModel<typeof users>;
-export type UserInsert = InferInsertModel<typeof users>;
-export type PostSelect = InferSelectModel<typeof posts>;
-export type PostInsert = InferInsertModel<typeof posts>;
-export type LikeSelect = InferSelectModel<typeof likes>;
-export type LikeInsert = InferInsertModel<typeof likes>;
-export type CommentSelect = InferSelectModel<typeof comments>;
-export type CommentInsert = InferInsertModel<typeof comments>;
-export type ConnectionSelect = InferSelectModel<typeof connections>;
-export type ConnectionInsert = InferInsertModel<typeof connections>;
+export const savedPosts = pgTable(
+  'saved_posts',
+  {
+    userId: integer('user_id')
+      .notNull()
+      .references(() => users.id, {
+        onDelete: 'cascade',
+        onUpdate: 'no action',
+      }),
+    postId: integer('post_id')
+      .notNull()
+      .references(() => posts.id, {
+        onDelete: 'cascade',
+        onUpdate: 'no action',
+      }),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => {
+    return {
+      uniqueIndex: primaryKey({ columns: [t.userId, t.postId] }),
+    };
+  },
+);
+
+const messageStatus = pgEnum('message_status', [
+  'pending',
+  'sent',
+  'delivered',
+  'read',
+]);
+export const messages = pgTable('messages', {
+  id: serial('id').primaryKey(),
+  conversationId: integer('conversation_id')
+    .notNull()
+    .references(() => conversations.id, {
+      onDelete: 'cascade',
+      onUpdate: 'no action',
+    }),
+  senderId: integer('sender_id')
+    .notNull()
+    .references(() => users.id, {
+      onDelete: 'cascade',
+      onUpdate: 'no action',
+    }),
+  receiverId: integer('receiver_id')
+    .notNull()
+    .references(() => users.id, {
+      onDelete: 'cascade',
+      onUpdate: 'no action',
+    }),
+  content: text('content'),
+  status: messageStatus('status'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  deletedAt: timestamp('deleted_at'),
+  deliveredAt: timestamp('delivered_at'),
+  readAt: timestamp('read_at'),
+  sentAt: timestamp('sent_at'),
+});
+
+export const conversations = pgTable('conversations', {
+  id: serial('id').primaryKey(),
+  user1Id: integer('user1_id')
+    .notNull()
+    .references(() => users.id, {
+      onDelete: 'cascade',
+      onUpdate: 'no action',
+    }),
+  user2Id: integer('user2_id')
+    .notNull()
+    .references(() => users.id, {
+      onDelete: 'cascade',
+      onUpdate: 'no action',
+    }),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});

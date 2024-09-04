@@ -21,9 +21,16 @@ export const postService = {
     return { ...rest, posts: data };
   },
 
+  useSavedPosts: () => {
+    const { data, ...rest } = useSWR<Post[]>("/saved-posts", fetcher);
+    return { ...rest, posts: data };
+  },
+
   createPost: async (postData: CreatePost) => {
     try {
-      const response = await api.post("/posts", postData);
+      const response = await api.post("/posts", postData,{headers: {
+        'Content-Type': 'multipart/form-data'
+      }});
       return response.data;
     } catch (error) {
       console.error("Error creating post:", error);
@@ -68,6 +75,28 @@ export const postService = {
       await api.delete(`/posts/${id}`);
     } catch (error) {
       console.error("Error deleting post:", error);
+      throw error;
+    }
+  },
+
+  savePost: async (postId: number) => {
+    try {
+      const response = await api.post(`/posts/${postId}/save`);
+      return response.data;
+      toast.success("Post saved");
+    } catch (error) {
+      toast.error("Error saving post");
+      console.error("Error saving post:", error);
+      throw error;
+    }
+  },
+
+  unsavePost: async (postId: number) => {
+    try {
+      const response = await api.delete(`/posts/${postId}/unsave`);
+      return response.data;
+    } catch (error) {
+      console.error("Error unsaving post:", error);
       throw error;
     }
   },

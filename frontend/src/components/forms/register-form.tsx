@@ -18,6 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Eye, EyeOff } from "lucide-react"; // Add this import for Lucide icons
 
 function RegisterForm() {
   const loginSchema = z.object({
@@ -30,6 +31,7 @@ function RegisterForm() {
   const router = useRouter();
   const { login } = useAuthContext();
   const [isPending, setIsPending] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false); // Ensure this state is present
 
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
@@ -123,12 +125,21 @@ function RegisterForm() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Eg. welcome"
-                    {...field}
-                    className="input-auth"
-                  />
+                  <div className="relative"> 
+                    <Input
+                      type={showPassword ? "text" : "password"} 
+                      placeholder="Eg. welcome"
+                      {...field}
+                      className="input-auth pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2" // Position the button
+                    >
+                      {showPassword ? <EyeOff /> : <Eye />} 
+                    </button>
+                  </div>
                 </FormControl>
                 <FormMessage>{errors.password && errors.password.message}</FormMessage>
               </FormItem>

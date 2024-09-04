@@ -27,7 +27,7 @@ const Sidebar: React.FC = () => {
       label: "Follow",
     },
     {
-      href: "/",
+      href: "/message",
       icon: <MessageCircle style={{ fontSize: "1.3rem", color: "gray" }} />,
       label: "Message",
     },
@@ -37,7 +37,7 @@ const Sidebar: React.FC = () => {
       label: "Profile",
     },
     {
-      href: "/",
+      href: "/saved",
       icon: <Bookmark style={{ fontSize: "1.5rem", color: "gray" }} />,
       label: "Saved",
     },
