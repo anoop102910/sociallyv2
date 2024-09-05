@@ -43,7 +43,7 @@ const Sidebar: React.FC = () => {
     },
   ];
   return (
-    <div className="sidebar flex-1 sticky top-16 bg-white text-gray-700 appear-animation ml-2 rounded-md shadow-md w-64 pt-3 px-1  h-[87vh] max-[940px]:hidden">
+    <div className="sidebar flex-1 sticky top-16 bg-white text-gray-700  ml-2 rounded-xl shadow-md w-64 pt-3 px-1  h-[87vh] max-[940px]:hidden">
       <ul className="flex flex-col gap-y-3">
         {sidebarItems.map(({ href, icon, label }) => (
           <Link

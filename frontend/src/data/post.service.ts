@@ -1,8 +1,8 @@
 import useSWR from "swr";
 import { CreatePost,Post } from "@/types";
 import fetcher from "@/lib/fether";
-import { toast } from "react-toastify";
 import api from "@/lib/api";
+import { tst } from "./utils";
 
 
 export const postService = {
@@ -43,7 +43,7 @@ export const postService = {
       const response = await api.post(`/posts/${postId}/like`);
       return response.data;
     } catch (error) {
-      toast.error("Error liking post");
+      tst.error("Error liking post");
       console.error("Error liking post:", error);
       throw error;
     }
@@ -54,7 +54,7 @@ export const postService = {
       const response = await api.post(`/posts/${id}/unlike`);
       return response.data;
     } catch (error) {
-      toast.error("Error unliking post");
+      tst.error("Error unliking post");
       console.error("Error unliking post:", error);
       throw error;
     }
@@ -82,10 +82,10 @@ export const postService = {
   savePost: async (postId: number) => {
     try {
       const response = await api.post(`/posts/${postId}/save`);
+      tst.success("Post saved");
       return response.data;
-      toast.success("Post saved");
     } catch (error) {
-      toast.error("Error saving post");
+      tst.error("Error saving post");
       console.error("Error saving post:", error);
       throw error;
     }

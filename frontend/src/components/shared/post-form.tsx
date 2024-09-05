@@ -51,7 +51,7 @@ const PostForm: React.FC<PostFormProps> = ({ className }) => {
   };
 
   return (
-    <div className={`bg-white text-gray-700 p-4 md:rounded-md shadow-md ${className}`}>
+    <div className={`bg-white text-gray-700 p-4 md:rounded-xl shadow-md ${className}`}>
       <div className="flex justify-between">
         <div className="flex items-center">
           <UserAvatar name={user.name} isProfile={true} />
@@ -112,7 +112,7 @@ const PostForm: React.FC<PostFormProps> = ({ className }) => {
             </div>
             <input
               disabled={isPending}
-              className="py-2 px-4 bg-blue-500 rounded-md text-white hover:bg-blue-600 transition mt-4 disabled:bg-slate-600 disabled:text-white"
+              className="py-2 px-4 bg-blue-500 rounded-lg text-white hover:bg-blue-600 transition mt-4 disabled:bg-slate-600 disabled:text-white"
               type="submit"
               value={isPending ? "Posting..." : "Post"}
             />

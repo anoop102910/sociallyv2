@@ -9,6 +9,7 @@ import { UserModule } from './api-modules/user/user.module';
 import { ConnnectionModule } from './api-modules/connnection/connnection.module';
 import { CommentModule } from './api-modules/comment/comment.module';
 import { ChatModule } from './api-modules/chat/chat.module';
+import { GenaiModule } from './api-modules/genai/genai.module';
 @Module({
   imports: [
     AuthModule,
@@ -19,6 +20,7 @@ import { ChatModule } from './api-modules/chat/chat.module';
     UserModule,
     ConnnectionModule,
     CommentModule,
+    GenaiModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ChatModule,
   ],

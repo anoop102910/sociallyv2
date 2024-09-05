@@ -2,7 +2,7 @@ import useSWR from "swr";
 import api from "../lib/api";
 import fetcher from "@/lib/fether";
 import { Comment } from "@/types";
-import { toast } from "react-toastify";
+import { tst } from "./utils";
 
 export const commentService = {
   useComments: (postId: number) => {
@@ -19,7 +19,7 @@ export const commentService = {
       return response.data;
     } catch (error) {
       console.log(error);
-      toast.error("Failed to comment post");
+      tst.error("Failed to comment post");
     }
   },
 
@@ -28,7 +28,7 @@ export const commentService = {
       await api.delete(`/api/comments/${commentId}`);
     } catch (error) {
       console.log(error);
-      toast.error("Failed to comment post");
+      tst.error("Failed to comment post");
     }
   },
 
@@ -38,7 +38,7 @@ export const commentService = {
       return response.data;
     } catch (error) {
       console.log(error);
-      toast.error("Failed to comment post");
+      tst.error("Failed to comment post");
     }
   },
 };

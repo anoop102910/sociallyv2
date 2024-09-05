@@ -2,10 +2,8 @@ import useSWR from "swr";
 import api from "../lib/api";
 import { User } from "@/types";
 import fetcher from "@/lib/fether";
-import useSWRMutation from "swr/mutation";
 
 export const userService = {
-  // Get all users
   useAllUsers: ({ query = "" }: { query?: string } = {}) => {
     const data = useSWR<User[]>("/users", fetcher);
     return { ...data, users: data.data };

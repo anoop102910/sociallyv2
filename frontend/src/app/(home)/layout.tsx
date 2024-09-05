@@ -18,7 +18,7 @@ export default function RootLayout({
     <>
       <div>
         <Navbar />
-        <div className="flex gap-4 pt-4 relative">
+        <div className="flex gap-8 pt-4 relative">
           <Sidebar />
           <div className=" flex-[5]"> {children}</div>
         </div>

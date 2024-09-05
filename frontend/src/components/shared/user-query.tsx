@@ -10,7 +10,7 @@ const UserQuery: React.FC<{}> = ({}) => {
   const { users, isLoading, error } = userService.useSearchUsers(query);
 
   return (
-    <div>
+    <div className="max-sm:hidden relative">
       {/* Form */}
       <form action="">
         <Input
@@ -22,11 +22,11 @@ const UserQuery: React.FC<{}> = ({}) => {
       </form>
       {/* User List */}
       {isLoading ? (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center absolute h-20 w-80 -left-2 bg-slate-100 rounded-xl border-2 border-blue-300">
           <Loader className="animate-spin h-5 w-5 text-gray-500" />
         </div>
       ) : users && users.length > 0 ? (
-        <div className="absolute animate-scale opacity-100 p-1 w-80 top-12 rounded-md bg-slate-100 border-2 border-blue-300">
+        <div className="absolute animate-scale opacity-100 p-1 w-80 top-12 -left-2 rounded-xl bg-slate-100 border-2 border-blue-300">
           {users?.map(user => (
             <Link onClick={() => setQuery("")} key={user.id} href={`/users/${user.id}`}>
               <div className="flex items-center justify-between hover:bg-white hover:scale-105 hover:translate-x-1 rounded-md px-4 py-2 transition-all duration-200 cursor-pointer">

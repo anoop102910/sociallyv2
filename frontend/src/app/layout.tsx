@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/authContext";
+import { Toaster } from "react-hot-toast";
 
 const poppins = Poppins({ subsets: ["latin"], weight: "400" });
 
@@ -21,6 +22,7 @@ export default function RootLayout({
         <AuthProvider>
           <main>{children}</main>
         </AuthProvider>
+        <Toaster position="bottom-center" reverseOrder={false} />
       </body>
     </html>
   );

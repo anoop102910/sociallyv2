@@ -1,6 +1,4 @@
-import useSWR from "swr";
 import api from "../lib/api";
-import fetcher from "@/lib/fether";
 
 export const conService = {
   followConnection: async (userId: number) => {

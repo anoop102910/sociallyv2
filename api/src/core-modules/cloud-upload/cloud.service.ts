@@ -22,14 +22,14 @@ export class CloudinaryService {
   async uploadImage(
     buffer: Buffer,
     width = 1000,
-    location = 'product',
+    location = 'socially/user/posts',
   ): Promise<CloudinaryResponse> {
     try {
       return new Promise((resolve, reject) => {
         const cld_upload_stream = cloudinary.uploader.upload_stream(
           {
             resource_type: 'image',
-            folder: `${location}/uploads`,
+            folder: `${location}`,
             format: 'webp',
             width,
           },

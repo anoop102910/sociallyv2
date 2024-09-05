@@ -12,7 +12,7 @@ function page() {
         className="max-sm:hidden absolute inset w-full h-screen object-cover filter brightness-50 -z-[1000] opacity-80 bg-blend-darken object-center"
         alt="Background"
       />
-      <div className="md:w-[1000px] md:max-h-[90vh] md:mt-4 rounded-lg md:flex md:bg-white md:overflow-hidden">
+      <div className="md:w-[1000px] md:max-h-[90vh] md:mt-4 rounded-xl md:flex md:bg-white md:overflow-hidden">
         <RegisterForm />
         <div className="bg-dark-100/75 -z-10 w-full h-screen absolute top-0 left-0 md:hidden"></div>
         <Image

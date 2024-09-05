@@ -27,6 +27,7 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import CommentForm from "./comment-form";
+import EnlargedImage from "../ui/enlarged-image";
 
 interface PostCardProps {
   className?: string;
@@ -102,7 +103,7 @@ const PostCard: React.FC<PostCardProps> = ({ className, post }) => {
 
   return (
     <div
-      className={`bg-white py-4 md:p-4 md:rounded-md text-gray-700 shadow-md test:bg-dark-200 test:text-white ${className}`}
+      className={`bg-white py-6 md:p-4 md:rounded-xl text-gray-700 shadow-md test:bg-dark-200 test:text-white ${className}`}
     >
       {/* Post Header */}
       <div className="flex justify-between px-2">
@@ -138,12 +139,14 @@ const PostCard: React.FC<PostCardProps> = ({ className, post }) => {
       <div className="mt-8 test:text-slate-300 text-gray-700 text-[0.89rem]">
         {post.content && <p className="px-2">{post.content}</p>}
         {post.mediaUrl && (
-          <img
-            src={post.mediaUrl}
-            className="w-full object-contain object-center mt-4 md:rounded-lg lazyload"
-            alt=""
-            loading="lazy"
-          />
+          <EnlargedImage key={post.id}>
+            <img
+              src={post.mediaUrl}
+              className="w-full object-contain object-center mt-4 md:rounded-xl lazyload"
+              alt=""
+              loading="lazy"
+            />
+          </EnlargedImage>
         )}
 
         {/* Post footer */}
