@@ -1,31 +1,15 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "package.json",
-        "use": "@vercel/node",
-        "config": {
-          "includeFiles": [
-            "dist/**/*",
-            "node_modules/**/*"
-          ],
-          "excludeFiles": [
-            "src/**/*",
-            "tests/**/*",
-            "scripts/**/*"
-          ]
-        }
-      }
-    ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "/dist/main.js",
-        "methods": ["GET", "POST", "PUT", "DELETE"]
-      }
-    ],
-    "env": {
-      "NODE_ENV": "production"
+  "version": 2,
+  "builds": [
+    {
+      "src": "dist/main.js",
+      "use": "@vercel/node"
     }
-  }
-  
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "dist/main.js"
+    }
+  ]
+}
