@@ -10,6 +10,12 @@ import {
 
 export const role = pgEnum('role', ['user', 'admin']);
 export const conStatus = pgEnum('connection_status', ['pending', 'accepted']);
+const messageStatus = pgEnum('message_status', [
+  'pending',
+  'sent',
+  'delivered',
+  'read',
+]);
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
@@ -117,12 +123,6 @@ export const savedPosts = pgTable(
   },
 );
 
-const messageStatus = pgEnum('message_status', [
-  'pending',
-  'sent',
-  'delivered',
-  'read',
-]);
 export const messages = pgTable('messages', {
   id: serial('id').primaryKey(),
   conversationId: integer('conversation_id')

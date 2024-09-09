@@ -3,7 +3,6 @@ import CommentBox from "@/components/shared/comment-box";
 import { postService } from "@/data/post.service";
 import { Post } from "@/types/index";
 import { useAuthContext } from "@/context/authContext";
-import { commentService } from "@/data/comment.service";
 import Timestamp from "../ui/timestamp";
 import UserAvatar from "../ui/user-avatar";
 import {
@@ -24,8 +23,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import CommentForm from "./comment-form";
 import EnlargedImage from "../ui/enlarged-image";
 
@@ -35,11 +32,10 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ className, post }) => {
-  const [commentVal, setCommentVal] = useState("");
   const { user } = useAuthContext();
-  const isUserPost = post.author.id === user.id;
   const { posts, mutate } = postService.useGetUserFeed();
   const [toggle, setToggle] = useState(false);
+  const isUserPost = post.author.id === user.id;
 
   const menuItems = [
     {

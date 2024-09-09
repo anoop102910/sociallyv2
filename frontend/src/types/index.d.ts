@@ -56,3 +56,4 @@ export interface Conversation {
   user1Name: string;
   user2Name: string;
 }
+
