@@ -1,31 +1,49 @@
-import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthDto, SigninDto } from './auth.dto';
+import { AuthDto, LogoutDto, SigninDto } from './auth.dto';
 import { Response } from 'express';
+import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from 'src/decorators/get-user.decorator';
 
 @Controller('api/auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+  ) {}
 
-  @Post('register')
-  async register(@Body() dto: AuthDto, @Res() res: Response) {
-    const result = await this.authService.register(dto);
-    res.setHeader('Authorization', `Bearer ${result.token}`);
-    res.set('Access-Control-Expose-Headers', 'Authorization');
-    res.cookie('Authorization', result.token, { httpOnly: true });
-    return res
-      .status(HttpStatus.CREATED)
-      .json({ msg: result.msg, token: result.token });
+  @Post('register') 
+  async register(@Body() authDto: AuthDto, @Res({ passthrough: true }) res: Response) {
+    const { user, accessToken, refreshToken } = await this.authService.register(authDto);
+    res.cookie('accessToken', accessToken);
+    res.cookie('refreshToken', refreshToken);
+    return { user, accessToken, refreshToken };
   }
 
-  @Post('login')
-  async login(@Body() dto: SigninDto, @Res() res: Response) {
-    const result = await this.authService.login(dto);
-    res.setHeader('Authorization', `Bearer ${result.token}`);
-    res.set('Access-Control-Expose-Headers', 'Authorization');
-    res.cookie('Authorization', result.token, { httpOnly: true });
-    return res
-      .status(HttpStatus.OK)
-      .json({ msg: result.msg, token: result.token });
+  @Post('signin')
+  async signin(@Body() signinDto: SigninDto, @Res() res: Response) {
+    return await this.authService.signin(signinDto);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('logout')
+  async logout(@Body() token: string, @GetUser('id') userId: number, @Res() res: Response) {
+    return await this.authService.logout(token, userId);
+  }
+
+  @Post('refresh-token')
+  async refreshToken(@Body() refreshToken: string, @Res() res: Response) {
+    res.set('Authorization', 'Bearer ' + await this.authService.refreshToken(refreshToken));
+    return await this.authService.refreshToken(refreshToken);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('reset-password')
+  async resetPassword(@Body('id') id: number) {
+    return await this.authService.resetPassword(id);
+  } 
+
+  @Post('confirm-reset-password')
+  async confirmResetPassword(@Body() token: string, @Body() newPassword: string) {
+    return await this.authService.confirmResetPassword(token, newPassword);
   }
 }

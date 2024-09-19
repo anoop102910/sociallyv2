@@ -6,7 +6,10 @@ import {
   text,
   integer,
   primaryKey,
+  boolean,
+  uuid,
 } from 'drizzle-orm/pg-core';
+import { InferSelectModel } from 'drizzle-orm';
 
 export const role = pgEnum('role', ['user', 'admin']);
 export const conStatus = pgEnum('connection_status', ['pending', 'accepted']);
@@ -20,12 +23,45 @@ const messageStatus = pgEnum('message_status', [
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
+  username: text('username').notNull().unique(),
   email: text('email').unique().notNull(),
   password: text('password').notNull(),
   role: role('role').default('user'),
+  confirmed: boolean('is_email_confirmed').default(false),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
+
+export const credentials = pgTable('credentials', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id, {
+      onDelete: 'cascade',
+      onUpdate: 'no action',
+    }),
+  version: integer('version').notNull(),
+  lastPassword: text('last_password').notNull(),
+  passwordUpdatedAt: timestamp('password_updated_at').notNull(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
+export const blacklistedTokens = pgTable(
+  'blacklisted_tokens',
+  {
+    tokenId: uuid('token_id').notNull(),
+    userId: integer('user_id').references(() => users.id, {
+      onDelete: 'cascade',
+      onUpdate: 'no action',
+    }).notNull(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => {
+    return {
+      uniqueIndex: primaryKey({ columns: [t.userId, t.tokenId] }),
+    };
+  },
+);
 
 export const posts = pgTable('posts', {
   id: serial('id').primaryKey(),
@@ -170,3 +206,7 @@ export const conversations = pgTable('conversations', {
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
+
+export type IUser = InferSelectModel<typeof users>;
+export type ICredentials = InferSelectModel<typeof credentials>;
+export type IPost = InferSelectModel<typeof posts>;

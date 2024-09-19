@@ -10,6 +10,10 @@ import { ConnnectionModule } from './api-modules/connnection/connnection.module'
 import { CommentModule } from './api-modules/comment/comment.module';
 import { ChatModule } from './api-modules/chat/chat.module';
 import { GenaiModule } from './api-modules/genai/genai.module';
+import { config } from './config/index';
+import { validationSchema } from './config/config.schema';
+
+console.log(process.env.CLIENT_URL)
 @Module({
   imports: [
     AuthModule,
@@ -21,7 +25,7 @@ import { GenaiModule } from './api-modules/genai/genai.module';
     ConnnectionModule,
     CommentModule,
     GenaiModule,
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, validationSchema, load: [config] }),
     ChatModule,
   ],
 })
