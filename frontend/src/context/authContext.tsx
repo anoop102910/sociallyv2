@@ -37,7 +37,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const login = () => {
-    setIsLoading(true); // Set loading to true when starting login
+    setIsLoading(true); 
 
     try {
       const token = localStorage.getItem("token");

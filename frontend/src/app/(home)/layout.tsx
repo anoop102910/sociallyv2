@@ -11,9 +11,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const router = useRouter();
-  const { isAuthenticated } = useAuthContext();
-  if (!isAuthenticated) router.push("/auth/login");
+  const { isAuthenticated, isLoading } = useAuthContext();
   
+  React.useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push("/auth/login");
+    }
+  }, [isLoading, isAuthenticated, router]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <div>

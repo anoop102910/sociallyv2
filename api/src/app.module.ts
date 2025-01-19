@@ -10,6 +10,8 @@ import { ConnnectionModule } from './api-modules/connnection/connnection.module'
 import { CommentModule } from './api-modules/comment/comment.module';
 import { ChatModule } from './api-modules/chat/chat.module';
 import { GenaiModule } from './api-modules/genai/genai.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 @Module({
   imports: [
     AuthModule,
@@ -24,5 +26,7 @@ import { GenaiModule } from './api-modules/genai/genai.module';
     ConfigModule.forRoot({ isGlobal: true }),
     ChatModule,
   ],
+  controllers:[AppController],
+  providers:[AppService]
 })
 export class AppModule {}
